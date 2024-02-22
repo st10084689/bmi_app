@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Bmi project</string>
+    <string name="bmi_scale_place_holder">Normal</string>
+    <string name="bmi_number">145Bmi</string>
+
+        <string-array name="units">
+            <item>Metric</item>
+            <item>Imperial</item>
+        </string-array>
+</resources>

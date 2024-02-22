@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BmiProject" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <item name="colorPrimary">#262626</item>
+        
+    </style>
+
+    <style name="SCREEN">
+        <item name="android:background">#252525</item>
+    </style>
+
+    <style name="TEXT" >
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#252525</item>
+    </style>
+
+    <style name="EDIT_TEXT" >
+        <item name="android:background">@drawable/edittext_background_dark</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="hintTextColor">#EAEAEA</item>
+    </style>
+    <style name="ARROW">
+        <item name="android:background">@drawable/baseline_arrow_drop_up_24_dark</item>
+    </style>
+
+</resources>
