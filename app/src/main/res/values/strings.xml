@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">Bmi project</string>
+    <string name="app_name">Bmi Scaler</string>
     <string name="bmi_scale_place_holder">Normal</string>
     <string name="bmi_number">145Bmi</string>
+    <string name="your_web_client_id">730328544537-6lu13lrimrii04c9sghnlijundpf4cv8.apps.googleusercontent.com</string>
 
-        <string-array name="units">
-            <item>Metric</item>
-            <item>Imperial</item>
-        </string-array>
+    <string-array name="units">
+        <item>Metric</item>
+        <item>Imperial</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

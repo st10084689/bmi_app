@@ -23,5 +23,11 @@
     <style name="ARROW">
         <item name="android:background">@drawable/baseline_arrow_drop_up_24_dark</item>
     </style>
+    <style name="MID_GRADIENT">
+        <item name="android:background">@drawable/mid_gradient_dark</item>
+    </style>
+    <style name="Email_icon">
+        <item name="android:src">@drawable/baseline_mail_outline_24_light</item>
+    </style>
 
 </resources>

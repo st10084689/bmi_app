@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignInActivity"
+    style="@style/SCREEN"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/google_sign_btn"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        style="@style/EDIT_TEXT">
+<ImageView
+    android:id="@+id/google_icon"
+    android:layout_width="63dp"
+    android:layout_height="63dp"
+    android:src="@drawable/google"
+    android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/email_sign_btn"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        style="@style/EDIT_TEXT">
+
+     <TextView
+         android:id="@+id/email_txt"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Email and password"
+         android:layout_centerInParent="true"
+         android:fontFamily="@font/roboto_medium"
+         android:textSize="20sp"
+         style="@style/TEXT"
+         />
+        <ImageView
+            android:id="@+id/email_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/Email_icon"
+            android:layout_margin="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/email_txt"/>
+    </RelativeLayout>
+
+</LinearLayout>

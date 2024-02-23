@@ -11,4 +11,5 @@
     <color name="top_underweight">#04FFD2</color>
     <color name="bottom_underweight">#0459FF</color>
     <color name="card_grey">#383838</color>
+    <color name="background_grey">#252525</color>
 </resources>

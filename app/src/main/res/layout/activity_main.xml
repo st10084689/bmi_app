@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/SCREEN"
+    android:id="@+id/nav_drawer"
     tools:context=".MainActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_content"
         android:layout_width="match_parent"
@@ -20,13 +25,30 @@
         android:layout_height="250dp"
         android:background="@drawable/top_gradient">
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/bmi_scale"
+            android:layout_marginLeft="25dp"
+            android:layout_centerVertical="true">
+        <ImageView
+            android:id="@+id/slider_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:src="@drawable/baseline_reorder_24"
+
+            />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/bmi_scale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/roboto_medium"
-            android:text="Set Bmi"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="40sp" />
     <TextView
@@ -44,11 +66,13 @@
             android:id="@+id/bottom_rel_gradient"
             android:layout_width="match_parent"
             android:layout_height="10dp"
-            android:background="@drawable/mid_gradient"
+            style="@style/MID_GRADIENT"
             android:layout_alignParentBottom="true">
 
         </RelativeLayout>
     </RelativeLayout>
+
+
     <RelativeLayout
         android:id="@+id/bmi_bar_relative"
         android:layout_below="@id/top_relative"
@@ -113,6 +137,7 @@
            android:layout_width="20dp"
            android:layout_height="20dp"
            style="@style/ARROW"
+           android:visibility="invisible"
            />
        </RelativeLayout>
      </RelativeLayout>
@@ -298,11 +323,19 @@
     <com.google.android.gms.ads.AdView
         xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-5672195872456028/5587565066">
     </com.google.android.gms.ads.AdView>
-</RelativeLayout>
+
+        </RelativeLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/navigation_menu" />
+    </androidx.drawerlayout.widget.DrawerLayout>

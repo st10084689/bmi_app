@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/SCREEN"
+    tools:context=".fragments.SignInFragment">
+ <TextView
+    android:id="@+id/sign_in_txt"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Sign In"
+    android:layout_marginTop="60dp"
+    android:textSize="30sp"
+    style="@style/TEXT"
+    android:layout_centerHorizontal="true"/>
+
+    <RelativeLayout
+        android:id="@+id/username_rel"
+       android:layout_below="@id/sign_in_txt"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <EditText
+            android:id="@+id/email_edit_text"
+            android:layout_below="@id/email_text"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            style="@style/EDIT_TEXT"
+            android:inputType="textAutoComplete"
+            android:paddingLeft="15dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="30sp"
+            />
+        <TextView
+            android:id="@+id/email_text"
+            android:layout_marginLeft="30dp"
+            android:padding="5dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="20sp"
+            android:layout_marginBottom="-15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TEXT"
+            android:text="Email"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/password_rel"
+        android:layout_below="@id/username_rel"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+
+        <EditText
+            android:id="@+id/password_edit_text"
+            android:layout_below="@id/password_text"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            style="@style/EDIT_TEXT"
+            android:inputType="textAutoComplete"
+            android:paddingLeft="15dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="30sp"
+            />
+        <TextView
+            android:id="@+id/password_text"
+            android:layout_marginLeft="30dp"
+            android:padding="5dp"
+            android:fontFamily="@font/roboto_medium"
+            android:textSize="20sp"
+            android:layout_marginBottom="-15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TEXT"
+            android:text="Password"/>
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/registerTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="register"
+        style="@style/TEXT"
+        android:fontFamily="@font/roboto_medium"
+        android:textSize="20sp"
+        android:layout_below="@id/password_rel"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/submit_btn"
+        android:layout_below="@id/registerTxt"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:cardCornerRadius="20dp"
+        app:cardBackgroundColor="#71FD98"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="25dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/roboto_bold"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

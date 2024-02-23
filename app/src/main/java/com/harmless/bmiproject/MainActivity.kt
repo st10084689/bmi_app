@@ -4,27 +4,34 @@ import android.content.res.Configuration
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.harmless.bmiproject.databinding.ActivityMainBinding
+import org.w3c.dom.Text
 import java.lang.Math.pow
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object{
         val TAG = "MainActivity"
     }
@@ -39,8 +46,8 @@ class MainActivity : AppCompatActivity() {
 
     //declaring the bmi text view
     private lateinit var bmiTextView: TextView
-
     private lateinit var submitBtn:CardView
+    private lateinit var drawerLayout:DrawerLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,17 +58,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun init(){
-        //for the progress bar
-//        val bmiProgressBar = binding.bmiProgressBar
-//        val bmiValue = 68
-//        val progress = (bmiValue/30)*100
-//        bmiProgressBar.progress = progress
+        initNavagationView()
+        isDarkModeOn()
 
-        //initialising the add
+        //determining whether the arrow should show
+        if(binding.bmiScaleNumber.text.isNotEmpty()){
+            binding.arrow.visibility = View.VISIBLE
+        }
+
+        binding.sliderBtn.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        //initialising the ad
         var adRequest = AdRequest.Builder().build()
 
 
         lateinit var selectedUnit: String
+
          // the edittext bmi values
 
         heightEditText = binding.heightEditText
@@ -84,6 +98,8 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "Ad was loaded.")
                 mInterstitialAd = interstitialAd
             }
+
+
         })
 
         bannerAdView.loadAd(adRequest)
@@ -106,7 +122,6 @@ class MainActivity : AppCompatActivity() {
             override fun onAdImpression() {
                 // Code to be executed when an impression is recorded
                 // for an ad.
-                Log.d(TAG, "onAdImpression: $")
             }
 
             override fun onAdLoaded() {
@@ -133,6 +148,17 @@ class MainActivity : AppCompatActivity() {
         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 selectedUnit = p0!!.getItemAtPosition(p2).toString()
+
+                when(selectedUnit){
+                    "Imperial"->{
+                        heightEditText.hint = "eg. 4.5 feet"
+                        weightEditText.hint = "eg. 150 pounds"
+                    }
+                    "Metric"->{
+                        heightEditText.hint = "eg. 163 cm"
+                        weightEditText.hint = "eg. 60 kgs"
+                    }
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -148,15 +174,17 @@ class MainActivity : AppCompatActivity() {
             val valid = validation()
             if(valid){
                 if (mInterstitialAd != null) {
-                    mInterstitialAd?.show(this)
+//                    mInterstitialAd?.show(this)
                 } else {
                     Log.d("TAG", "The interstitial ad wasn't ready yet.")
                 }
-             var bmi =  calcBmi(weightEditText.text.toString().toInt(), selectedUnit, ageEditText.text.toString().toInt(),heightEditText.text.toString().toInt())
+             var bmi =  calcBmi(weightEditText.text.toString().toInt(), selectedUnit, heightEditText.text.toString().toInt())
                  bmiOutput.text = roundToTwoDecimals(bmi) + " BMI"
                 bmiValue(bmi)
-                setArrowPosition(bmi)
-
+                if(binding.bmiScaleNumber.text.isNotEmpty()){
+                    binding.arrow.visibility = View.VISIBLE
+                    setArrowPosition(bmi)
+                }
             }
             else{
 
@@ -170,7 +198,7 @@ class MainActivity : AppCompatActivity() {
         return "%.1f".format(number)
     }
 
-    private fun calcBmi(weight:Int, unit:String, age:Int, height:Int):Double{
+    private fun calcBmi(weight:Int, unit:String, height:Int):Double{
         var bmi = 0.0
         when(unit){
             "Metric" ->{
@@ -186,9 +214,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         return bmi
-    }
+    }//method ends
 
-    private fun validation(): Boolean {
+    private fun validation(): Boolean {//method to validation the values
         var isValid = true
         val heightText = binding.heightText
         val ageText = binding.ageText
@@ -236,54 +264,77 @@ class MainActivity : AppCompatActivity() {
         }
 
         return isValid
-    }
+    }//method end
 
-    private fun bmiValue(bmi: Double) {
+    private fun bmiValue(bmi: Double) {//method to move the arrow base on where the bmi value is
         val relativeLayout = binding.topRelative
         val gradientDrawable = relativeLayout.background as GradientDrawable
         val bottomGradientRel = binding.bottomRelGradient
         val bottomGradient = bottomGradientRel.background as GradientDrawable
 
-        if (bmi >= 40.0) { // Obesity class III at the top
-            bmiTextView.text = "Obesity class III"
+        if (bmi >= 40.0) {
+            bmiTextView.text = "Obesity III"
             gradientDrawable.colors = intArrayOf(
                 ContextCompat.getColor(this, R.color.top_obese),
                 ContextCompat.getColor(this, R.color.bottom_obese)
             )
             relativeLayout.invalidate()
+            if(isDarkModeOn()){
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_obese),
+                    ContextCompat.getColor(this, R.color.background_grey)
+                )
+            }
+            else{
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_obese),
+                    ContextCompat.getColor(this, R.color.white)
+                )
+            }
 
-            bottomGradient.colors = intArrayOf(
-                ContextCompat.getColor(this, R.color.bottom_obese),
-                ContextCompat.getColor(this, R.color.white)
-            )
 
             val colorResourceId: Int = R.color.top_obese
             submitBtn.setCardBackgroundColor(ContextCompat.getColor(this, colorResourceId))
 
         } else if (35.0 <= bmi && bmi <= 39.9) {
-            bmiTextView.text = "Obesity class II"
+            bmiTextView.text = "Obesity II"
             gradientDrawable.colors = intArrayOf(
                 ContextCompat.getColor(this, R.color.top_obese),
                 ContextCompat.getColor(this, R.color.bottom_obese)
             )
-            bottomGradient.colors = intArrayOf(
-                ContextCompat.getColor(this, R.color.bottom_obese),
-                ContextCompat.getColor(this, R.color.white)
-            )
+            if(isDarkModeOn()){
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_obese),
+                    ContextCompat.getColor(this, R.color.background_grey)
+                )
+            }
+            else{
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_obese),
+                    ContextCompat.getColor(this, R.color.white)
+                )
+            }
 
             val colorResourceId: Int = R.color.top_obese
             submitBtn.setCardBackgroundColor(ContextCompat.getColor(this, colorResourceId))
         } else if (30.0 <= bmi && bmi <= 34.9) {  // And here
-            bmiTextView.text = "Obesity class I"
+            bmiTextView.text = "Obesity I"
             gradientDrawable.colors = intArrayOf(
                 ContextCompat.getColor(this, R.color.top_obese),
                 ContextCompat.getColor(this, R.color.bottom_obese)
             )
-            bottomGradient.colors = intArrayOf(
-                ContextCompat.getColor(this, R.color.bottom_obese),
-                ContextCompat.getColor(this, R.color.white)
-            )
-
+            if(isDarkModeOn()){
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_obese),
+                    ContextCompat.getColor(this, R.color.background_grey)
+                )
+            }
+            else{
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_obese),
+                    ContextCompat.getColor(this, R.color.white)
+                )
+            }
             val colorResourceId: Int = R.color.top_obese
             submitBtn.setCardBackgroundColor(ContextCompat.getColor(this, colorResourceId))
         } else if (25.0 <= bmi && bmi <= 29.9) {
@@ -293,10 +344,18 @@ class MainActivity : AppCompatActivity() {
                         ContextCompat.getColor(this, R.color.top_preobese),
                 ContextCompat.getColor(this, R.color.bottom_preobese)
             )
-            bottomGradient.colors = intArrayOf(
-                ContextCompat.getColor(this, R.color.bottom_preobese),
-                ContextCompat.getColor(this, R.color.white)
-            )
+            if(isDarkModeOn()){
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_preobese),
+                    ContextCompat.getColor(this, R.color.background_grey)
+                )
+            }
+            else{
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_preobese),
+                    ContextCompat.getColor(this, R.color.white)
+                )
+            }
 
             val colorResourceId: Int = R.color.top_preobese
             submitBtn.setCardBackgroundColor(ContextCompat.getColor(this, colorResourceId))
@@ -307,10 +366,18 @@ class MainActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.top_normal),
                 ContextCompat.getColor(this, R.color.bottom_normal)
             )
-            bottomGradient.colors = intArrayOf(
-                ContextCompat.getColor(this, R.color.bottom_normal),
-                ContextCompat.getColor(this, R.color.white)
-            )
+            if(isDarkModeOn()){
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_normal),
+                    ContextCompat.getColor(this, R.color.background_grey)
+                )
+            }
+            else{
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_normal),
+                    ContextCompat.getColor(this, R.color.white)
+                )
+            }
 
             val colorResourceId: Int = R.color.top_normal
             submitBtn.setCardBackgroundColor(ContextCompat.getColor(this, colorResourceId))
@@ -320,11 +387,19 @@ class MainActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.top_underweight),
                 ContextCompat.getColor(this, R.color.bottom_underweight)
             )
-            bottomGradient.colors = intArrayOf(
-                ContextCompat.getColor(this, R.color.bottom_underweight),
-                ContextCompat.getColor(this, R.color.white)
-            )
-            val colorResourceId: Int = R.color.top_underweight
+            if(isDarkModeOn()){
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_underweight),
+                    ContextCompat.getColor(this, R.color.background_grey)
+                )
+            }
+            else{
+                bottomGradient.colors = intArrayOf(
+                    ContextCompat.getColor(this, R.color.bottom_underweight),
+                    ContextCompat.getColor(this, R.color.white)
+                )
+            }
+            val colorResourceId: Int = R.color.bottom_underweight
             submitBtn.setCardBackgroundColor(ContextCompat.getColor(this, colorResourceId))
         } else {
             bmiTextView.text = ""
@@ -337,42 +412,8 @@ class MainActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.white)
             )
         }
-    }
+    }//method end
 
-//    private fun positiongraphArrow(bmiValue:Double){
-//        val relativeLayout = binding.bmiGraph
-//        var widthWithMargins: Int = 500
-//        relativeLayout.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//
-//            override fun onGlobalLayout() {
-//                // The width of the RelativeLayout after accounting for the margins
-//                widthWithMargins = relativeLayout.width
-//                // Remove the listener to avoid multiple calls
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                    relativeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                } else {
-//                    relativeLayout.viewTreeObserver.removeGlobalOnLayoutListener(this)
-//                }
-//                // Log the width or use it as needed
-//                Log.d("RelativeLayoutWidth", "Width with margins: $widthWithMargins")
-//            }
-//        })
-//
-//        val maxArrow = 40
-//        val minArrow = 0
-//
-//       var percentage = (bmiValue/ maxArrow) *100
-//        Log.d(TAG, "positiongraphArrow: $percentage")
-//        Log.d(TAG, "positiongraphArrow: width $widthWithMargins")
-//        var positionValue = widthWithMargins * percentage
-//        Log.d(TAG, "positiongraphArrow: positionvalue $positionValue")
-//        val bmiArrow = binding.arrow
-//        val params = bmiArrow.layoutParams as ViewGroup.MarginLayoutParams
-//
-//
-//        params.setMargins(positionValue.toInt(),  0,  0,  0)
-//        Log.d(TAG, "positiongraphArrow: percentage is $percentage")
-//    }
 
     private fun setArrowPosition(bmi: Double) {
         val relativeLayout = binding.bmiGraph
@@ -403,8 +444,29 @@ class MainActivity : AppCompatActivity() {
         ) // Centering the arrow
         arrowImageView.layoutParams = params
     }
+
+    private fun initNavagationView(){
+
+         drawerLayout = binding.navDrawer
+        val navigationDrawer = binding.navView
+        navigationDrawer.setNavigationItemSelectedListener(this)
+
+        val headerView = navigationDrawer.inflateHeaderView(R.layout.navigation_header)
+        val headerImage = headerView.findViewById<ImageView>(R.id.imageView)
+        val headerTextView = headerView.findViewById<TextView>(R.id.nav_account_name)
+
+        headerImage.setImageResource(R.drawable.baseline_account_circle_24)
+        //getting the user
+        val user = FirebaseAuth.getInstance().currentUser
+        headerTextView.text = user?.email
+    }
+
     private fun isDarkModeOn(): Boolean {
         val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        TODO("Not yet implemented")
     }
 }
