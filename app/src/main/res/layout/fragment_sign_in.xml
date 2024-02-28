@@ -6,6 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/SCREEN"
     tools:context=".fragments.SignInFragment">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
  <TextView
     android:id="@+id/sign_in_txt"
     android:layout_width="wrap_content"
@@ -124,5 +128,5 @@
                 android:textSize="25sp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
-
+    </RelativeLayout>
 </RelativeLayout>

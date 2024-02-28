@@ -1,8 +1,10 @@
 package com.harmless.bmiproject
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -13,6 +15,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -26,9 +29,12 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.harmless.bmiproject.databinding.ActivityMainBinding
-import org.w3c.dom.Text
+import com.harmless.bmiproject.models.TrackModel
 import java.lang.Math.pow
+import java.util.Date
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -36,6 +42,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val TAG = "MainActivity"
     }
     private var mInterstitialAd: InterstitialAd? = null
+
+    private var TrackerInterstitialAd: InterstitialAd? = null
+
+    private val doubleBackToExitPressedOnce = false
 
     private lateinit var binding : ActivityMainBinding
 
@@ -49,12 +59,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var submitBtn:CardView
     private lateinit var drawerLayout:DrawerLayout
 
-
+    private  var i :Int=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         init()
+
     }
 
     private fun init(){
@@ -88,6 +99,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //loading an advertisement
         MobileAds.initialize(this){}
        val bannerAdView = binding.adView
+        bannerAdView.loadAd(adRequest)
         InterstitialAd.load(this,"ca-app-pub-5672195872456028/2394904449", adRequest, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
                 Log.d(TAG, adError.toString())
@@ -102,7 +114,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         })
 
-        bannerAdView.loadAd(adRequest)
+        InterstitialAd.load(this,"ca-app-pub-5672195872456028/2599305617", adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Log.d(TAG, adError.toString())
+                TrackerInterstitialAd = null
+            }
+
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                Log.d(TAG, "Ad was loaded.")
+                TrackerInterstitialAd = interstitialAd
+
+
+            }
+
+
+        })
 
         bannerAdView.adListener = object: AdListener() {
             override fun onAdClicked() {
@@ -174,17 +200,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val valid = validation()
             if(valid){
                 if (mInterstitialAd != null) {
-//                    mInterstitialAd?.show(this)
+                    mInterstitialAd?.show(this)
                 } else {
                     Log.d("TAG", "The interstitial ad wasn't ready yet.")
                 }
-             var bmi =  calcBmi(weightEditText.text.toString().toInt(), selectedUnit, heightEditText.text.toString().toInt())
+             var bmi =  calcBmi(weightEditText.text.toString().toDouble(), selectedUnit, heightEditText.text.toString().toDouble())
                  bmiOutput.text = roundToTwoDecimals(bmi) + " BMI"
                 bmiValue(bmi)
                 if(binding.bmiScaleNumber.text.isNotEmpty()){
                     binding.arrow.visibility = View.VISIBLE
                     setArrowPosition(bmi)
                 }
+
+                writeToDatabase(weightEditText.text.toString(), bmi,ageEditText.text.toString(), selectedUnit)
             }
             else{
 
@@ -198,18 +226,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return "%.1f".format(number)
     }
 
-    private fun calcBmi(weight:Int, unit:String, height:Int):Double{
+    private fun calcBmi(weight:Double, unit:String, height:Double):Double{
         var bmi = 0.0
         when(unit){
             "Metric" ->{
                 Log.d(TAG, "calcBmi: height $height")
                 Log.d(TAG, "calcBmi: weight $weight")
                 bmi = weight / pow(height.toDouble() / 100, 2.0)
+                Log.d(TAG, "calcBmi: Metric")
             }
             "Imperial" ->{
                 Log.d(TAG, "calcBmi: height $height")
                 Log.d(TAG, "calcBmi: weight $weight")
-                 bmi = (weight * 703) / (height * height).toDouble()
+                val heightInches = height * 12
+                 bmi = (weight / pow(heightInches, 2.0)) * 703
+                Log.d(TAG, "calcBmi: Metric")
             }
         }
 
@@ -466,7 +497,71 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
+    private fun writeToDatabase(weight: String, bmi:Double,age:String, selectedUnit: String){
+        val database = Firebase.database
+        val user = FirebaseAuth.getInstance().currentUser
+        val uid = user?.uid
+        val email = user?.uid
+        if(email!!.isNotEmpty()){
+            val dbReference = database.getReference("bmi").child(uid!!)
+
+            //getting the current date
+            val currentDate: Date = Date()
+
+
+            val bmi = TrackModel(weight, bmi, currentDate ,age,email,selectedUnit)
+
+            //pushes to database
+            dbReference.push().setValue(bmi)
+        }
+        else{
+
+        }
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        TODO("Not yet implemented")
+        when (item.itemId) {
+            R.id.nav_login -> {
+                val intent = Intent(this, TrackActivity::class.java)
+                startActivity(intent)
+                    TrackerInterstitialAd?.show(this)
+
+
+                return true
+            }
+            R.id.nav_log_out->{
+                val mAuth = FirebaseAuth.getInstance()
+                mAuth.signOut()
+                Toast.makeText(this, "Signed Out", Toast.LENGTH_LONG).show()
+                val toSignInActivity = Intent(this, SignInActivity::class.java)
+                startActivity(toSignInActivity)
+
+            }
+        }
+        return false
+    }
+
+    override fun onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed()
+            return
+        }
+
+        if (i == 1) {
+            super.onBackPressed()
+            finishAffinity()
+            return
+        }
+
+        this.i++
+        Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
+
+        Handler().postDelayed({ i = 0 }, 2000) // Reset the counter after 2 seconds
+
+        // If you want to cancel the exit operation if user doesn't press back within 2 seconds,
+        // you can uncomment the following lines.
+        // Handler().postDelayed({
+        //     doubleBackToExitPressedOnce = false
+        // }, 2000)
     }
 }

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_login"
-        android:title="Track"/>
+        android:title="Home"/>
     <item
         android:id="@+id/nav_log_out"
         android:title="Log Out"/>

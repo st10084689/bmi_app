@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/graph_chart"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/topPointer"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:cardElevation="0dp"
+        app:cardCornerRadius="15dp"
+        android:layout_above="@id/bmi_value"
+        app:cardBackgroundColor="@color/flat_red"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible"
+        />
+    <TextView
+        android:layout_above="@id/candle"
+        android:id="@+id/bmi_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:text="45 BMI"
+        android:visibility="invisible"/>
+<RelativeLayout
+    android:id="@+id/candle"
+    android:layout_width="50dp"
+    android:layout_height="20dp"
+    android:layout_above="@id/date"
+    android:background="@drawable/bar_candle_red"
+    android:layout_centerHorizontal="true"
+    android:layout_marginRight="4dp"
+    android:layout_marginLeft="4dp">
+    
+</RelativeLayout>
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="today"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+    />
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="150dp"
+        android:background="#324C4B4B"
+        android:layout_above="@id/date"
+        android:layout_toRightOf="@id/candle"
+        android:visibility="gone"
+        android:layout_marginLeft="5dp"/>
+</RelativeLayout>
