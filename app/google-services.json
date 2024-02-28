@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "730328544537",
+    "project_id": "bmi-scaler",
+    "storage_bucket": "bmi-scaler.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730328544537:android:f0e03442cceac7b40b4188",
+        "android_client_info": {
+          "package_name": "com.harmless.bmiproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "730328544537-6lu13lrimrii04c9sghnlijundpf4cv8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYd0nylrAcXX5dDED6-0VR1XVdEypGu2E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730328544537-6lu13lrimrii04c9sghnlijundpf4cv8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
