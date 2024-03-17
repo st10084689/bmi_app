@@ -59,6 +59,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var submitBtn:CardView
     private lateinit var drawerLayout:DrawerLayout
 
+    //the navigation view
+    private lateinit var headerImage:ImageView
+    private lateinit var  headerTextView:TextView
+
     private  var i :Int=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -483,13 +487,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationDrawer.setNavigationItemSelectedListener(this)
 
         val headerView = navigationDrawer.inflateHeaderView(R.layout.navigation_header)
-        val headerImage = headerView.findViewById<ImageView>(R.id.imageView)
-        val headerTextView = headerView.findViewById<TextView>(R.id.nav_account_name)
+         headerImage = headerView.findViewById<ImageView>(R.id.imageView)
+         headerTextView = headerView.findViewById<TextView>(R.id.nav_account_name)
 
         headerImage.setImageResource(R.drawable.baseline_account_circle_24)
         //getting the user
         val user = FirebaseAuth.getInstance().currentUser
-        headerTextView.text = user?.email
+        if (user == null || user.email.isNullOrEmpty()) {
+            headerTextView.text = "Guest"
+        } else {
+            headerTextView.text = user.email
+        }
+
     }
 
     private fun isDarkModeOn(): Boolean {
@@ -522,14 +531,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_login -> {
-                val intent = Intent(this, TrackActivity::class.java)
-                startActivity(intent)
+
+                val user = FirebaseAuth.getInstance().currentUser
+                if (user == null || user.email.isNullOrEmpty()) {
+                    Toast.makeText(this@MainActivity, "Login to Track your progress", Toast.LENGTH_SHORT).show()
+                } else {
+                    val intent = Intent(this, TrackActivity::class.java)
+                    startActivity(intent)
                     TrackerInterstitialAd?.show(this)
+                }
+
+
 
 
                 return true
             }
             R.id.nav_log_out->{
+
                 val mAuth = FirebaseAuth.getInstance()
                 mAuth.signOut()
                 Toast.makeText(this, "Signed Out", Toast.LENGTH_LONG).show()

@@ -72,10 +72,11 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             style="@style/EDIT_TEXT"
-            android:inputType="textAutoComplete"
+            android:inputType="textPassword"
             android:paddingLeft="15dp"
             android:fontFamily="@font/roboto_medium"
             android:textSize="30sp"
+
             />
         <TextView
             android:id="@+id/password_text"

@@ -29,6 +29,7 @@ class SignInActivity : AppCompatActivity() {
     //setting up the buttons
     private lateinit var googleBtn: RelativeLayout
     private lateinit var emailBtn: RelativeLayout
+    private lateinit var guestBtn: RelativeLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignInBinding.inflate(layoutInflater)
@@ -39,6 +40,8 @@ class SignInActivity : AppCompatActivity() {
     private fun init(){
         googleBtn = binding.googleSignBtn
         emailBtn = binding.emailSignBtn
+
+        guestBtn = binding.ContinueAsGuestBtn
 
         auth = FirebaseAuth.getInstance()
 
@@ -59,6 +62,10 @@ class SignInActivity : AppCompatActivity() {
 
         emailBtn.setOnClickListener{
             emailSignIn()
+        }
+        guestBtn.setOnClickListener{
+            val intent = Intent(this@SignInActivity, MainActivity::class.java)
+            startActivity(intent);
         }
     }
 
@@ -87,6 +94,7 @@ class SignInActivity : AppCompatActivity() {
             }
         }
     }
+
         private fun firebaseAuthWithGoogle(idToken: String) {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             auth.signInWithCredential(credential)

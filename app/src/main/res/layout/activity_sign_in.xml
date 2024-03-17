@@ -71,12 +71,12 @@
 
         <TextView
             android:id="@+id/email_txt"
-            android:textColor="@color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/roboto_medium"
             android:text="Email and password"
+            android:textColor="@color/white"
             android:textSize="20sp" />
         <ImageView
             android:id="@+id/email_icon"
@@ -87,6 +87,33 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/email_txt"/>
     </RelativeLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:cardCornerRadius="13dp"
+        app:cardElevation="0dp"
+        >
+        <RelativeLayout
+            android:id="@+id/ContinueAsGuestBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <TextView
+                android:id="@+id/Guest_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/roboto_medium"
+                android:text="Guest"
+                android:textColor="#199281"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
 
 </LinearLayout>

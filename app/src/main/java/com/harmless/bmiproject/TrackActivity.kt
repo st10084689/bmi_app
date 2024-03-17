@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -193,6 +194,14 @@ class TrackActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelect
                 startActivity(intent)
                 TrackerInterstitialAd?.show(this)
                 return true
+            }
+            R.id.nav_log_out->{
+                val mAuth = FirebaseAuth.getInstance()
+                mAuth.signOut()
+                Toast.makeText(this, "Signed Out", Toast.LENGTH_LONG).show()
+                val toSignInActivity = Intent(this, SignInActivity::class.java)
+                startActivity(toSignInActivity)
+
             }
         }
         return false

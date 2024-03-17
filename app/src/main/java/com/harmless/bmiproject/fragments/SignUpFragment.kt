@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.harmless.bmiproject.MainActivity
 import com.harmless.bmiproject.R
