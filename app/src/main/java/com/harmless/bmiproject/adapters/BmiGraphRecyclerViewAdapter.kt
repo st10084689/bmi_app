@@ -54,16 +54,16 @@ class BmiGraphRecyclerViewAdapter(private val context: Context): RecyclerView.Ad
                 relativeParams.height = height
                 barColor(bmi.bmi, holder)
 
-            holder.candle.setOnClickListener {
+            holder.candle.setOnClickListener {//on click listenert to make the the point on the top of the candle visible after the user has clicked on the candle
                 val shouldShow = holder.bmiPointer.visibility != View.VISIBLE
                 holder.bmiPointer.visibility = if (shouldShow) View.VISIBLE else View.INVISIBLE
                 holder.bmi.visibility = if (shouldShow) View.VISIBLE else View.INVISIBLE
             }
-            val currentDate = Date()
+            val currentDate = Date()//gets the current date
             val cal = Calendar.getInstance()
             cal.time = currentDate
             cal.add(Calendar.DATE, -1)
-            val yesterday = cal.time
+            val yesterday = cal.time //gets the date of yesterday
             if (isSameDay(bmi.date, currentDate)) {
                 holder.date.text = "Today"
 
@@ -137,7 +137,7 @@ class BmiGraphRecyclerViewAdapter(private val context: Context): RecyclerView.Ad
             return bmiTrack?.size?: 0
         }
 
-    fun isSameDay(date1: Date, date2: Date): Boolean {
+    fun isSameDay(date1: Date, date2: Date): Boolean {//method to check if it the same day of a candle and returns a boolean
         val cal1 = Calendar.getInstance()
         cal1.time = date1
         val cal2 = Calendar.getInstance()
@@ -176,7 +176,7 @@ class BmiGraphRecyclerViewAdapter(private val context: Context): RecyclerView.Ad
     }
 
 
-    private fun barColor(bmi: Double, holder: TrackHolder){
+    private fun barColor(bmi: Double, holder: TrackHolder){//dynamically changes the candle color of the candle if the users bmi is in a certain weight
 
             if(bmi >= 30.0){
               holder.candle.setBackgroundResource(R.drawable.bar_candle_red)
