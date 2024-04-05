@@ -16,7 +16,7 @@ class EmailSignActivity : AppCompatActivity() {
         init()
     }
 
-    private fun init(){
+    private fun init(){//init method to make sure that the userfirst values are set (for now it just opens the )
         //initialize a fragment in the frame layout
         val signInFragment = SignInFragment()
 
